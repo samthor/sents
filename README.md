@@ -8,6 +8,8 @@ This is a filesystem watcher that just uses `fs.watch` and friends (i.e., no pol
 
 # Usage
 
+Basic usage:
+
 ```js
 import buildWatcher from 'sents';
 
@@ -25,8 +27,24 @@ watcher.on('error', (e) => {
 setTimeout(() => {
   watcher.close();
 }, 60 * 1000);
-
 ```
+
+This also supports some options:
+
+```js
+const watcher = buildWatcher('.', {
+  dotfiles: false,
+  filter: (rel) => true,
+});
+```
+
+* `dotfiles` controls whether files starting with '.' are returned
+* `filter` allows filtering of the results (`true` means include)
+  - Directories are passed with a trailing slash; if filtered, their subdirectories won't appear
+  - This should be a pure function (i.e., don't change results over time) or you'll have a bad time
+
+If you used Sents inside a command-line tool, you might provide a glob and its matcher code to `filter` to make it user-friendly.
+You could also make it support e.g., the contents of `.gitignore` (but make sure it doesn't change over time).
 
 # Caveats
 
