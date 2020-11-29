@@ -29,5 +29,5 @@ test('create folder', async t => {
 
   // TODO: queue update event
 
-  t.deepEqual(queue, [{type: 'add', filename: 'blah'}]);
+  t.deepEqual(queue, [{type: 'add', filename: 'blah/'}]);
 });
