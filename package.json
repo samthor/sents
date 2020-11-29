@@ -1,10 +1,10 @@
 {
   "name": "sents",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sentinels file watcher",
   "main": "lib/index.js",
   "exports": {
-    "import": "./lib/assembler.js",
+    "import": "./lib/index.js",
     "require": "./dist.cjs"
   },
   "repository": "git@github.com:samthor/sents.git",
