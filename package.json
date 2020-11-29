@@ -1,6 +1,6 @@
 {
   "name": "sents",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Sentinels file watcher",
   "main": "lib/index.js",
   "exports": {
@@ -16,7 +16,7 @@
   },
   "scripts": {
     "test": "ava",
-    "prepublishOnly": "rollup --format=cjs lib/assembler.js > dist.cjs"
+    "prepublishOnly": "rollup --format=cjs lib/index.js > dist.cjs"
   },
   "type": "module"
 }
