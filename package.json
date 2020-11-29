@@ -1,0 +1,22 @@
+{
+  "name": "sents",
+  "version": "1.0.0",
+  "description": "Sentinels file watcher",
+  "main": "lib/index.js",
+  "exports": {
+    "import": "./lib/assembler.js",
+    "require": "./dist.cjs"
+  },
+  "repository": "git@github.com:samthor/sents.git",
+  "author": "Sam Thorogood <sam.thorogood@gmail.com>",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "ava": "^3.13.0",
+    "rollup": "^2.33.3"
+  },
+  "scripts": {
+    "test": "ava",
+    "prepublishOnly": "rollup --format=cjs lib/assembler.js > dist.cjs"
+  },
+  "type": "module"
+}
