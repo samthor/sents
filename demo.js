@@ -2,13 +2,16 @@
 
 import buildWatcher from './lib/index.js';
 
+if (process.argv.length !== 3) {
+  console.warn('usage: ./demo.js <path>');
+  process.exit(0);
+}
 
 const watcher = buildWatcher(process.argv[2], {
   filter(rel) {
     if (rel.startsWith('node_modules/')) {
       return false;
     }
-    console.debug('?', rel);
     return true;
   },
 });
