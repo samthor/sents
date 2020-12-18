@@ -7,6 +7,7 @@
     "import": "./lib/index.js",
     "require": "./dist.cjs"
   },
+  "types": "index.d.ts",
   "repository": "git@github.com:samthor/sents.git",
   "author": "Sam Thorogood <sam.thorogood@gmail.com>",
   "license": "Apache-2.0",

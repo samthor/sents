@@ -24,6 +24,7 @@ import buildWatcher from 'sents';
 const watcher = buildWatcher('.');
 
 watcher.on('change', (filename, type, ino) => {
+  // type can be 'add', 'change', or 'remove'
   console.warn(type.toUpperCase(), filename, ino);
 });
 
@@ -48,13 +49,13 @@ const watcher = buildWatcher('.', {
 
 * `dotfiles` controls whether files starting with '.' are returned
 * `filter` allows filtering of the results (`true` means include)
-  - Directories are passed with a trailing slash; if filtered, their subdirectories won't appear
-  - This should be a pure function (i.e., don't change results over time) or you'll have a bad time
+  - Directories are passed with a trailing slash (or `path.sep` on Windows); if filtered, their subdirectories won't appear
+  - This should be a pure function (i.e., don't change results over time), otherwise, you'll have a bad time
 
-If you used Sents inside a command-line tool, you might provide a glob and its matcher code to `filter` to make it user-friendly.
+If you use this inside a command-line tool, you might provide a glob and its matcher code to `filter` to make it user-friendly. (We don't depend on one, choose your own.)
 You could also make it support e.g., the contents of `.gitignore` (but make sure it doesn't change over time).
 
 # Caveats
 
-Sents will only watch the original directory.
-If it moves or is renamed, Sents will probably fail.
+This will only watch the original directory.
+If that directory is renamed or deleted, the watcher will emit an error.
