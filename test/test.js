@@ -33,9 +33,7 @@ const createWatcher = () => {
 
   const queue = [];
   const w = build(root);
-  w.on('change', (filename, type) => {
-    queue.push({filename, type});
-  });
+  w.on('change', (filename, type) => queue.push({filename, type}));
 
   cleanup.push(() => w.close());
 
@@ -47,7 +45,20 @@ test('create folder', async t => {
 
   fs.mkdirSync(path.join(root, 'blah'));
   await wait();
-  t.deepEqual(queue, [{type: 'add', filename: 'blah/'}]);
+  t.deepEqual(queue, [{type: 'add', filename: `blah${path.sep}`}]);
+});
+
+test('file doesn\'t have trailing slash', async t => {
+  const {queue, root} = createWatcher();
+
+  fs.writeFileSync(path.join(root, 'testFile'), 'hi');
+  await wait();
+  t.deepEqual(queue, [{type: 'add', filename: 'testFile'}], 'file is added');
+  queue.splice(0, queue.length);
+
+  fs.rmSync(path.join(root, 'testFile'), {force: true});
+  await wait(100);
+  t.deepEqual(queue, [{type: 'delete', filename: 'testFile'}], 'should delete');
 });
 
 test('rename to same but case-sensitive', async t => {
@@ -55,13 +66,13 @@ test('rename to same but case-sensitive', async t => {
 
   fs.mkdirSync(path.join(root, 'sens_what'));
   await wait();
-  t.deepEqual(queue, [{type: 'add', filename: 'sens_what/'}], 'should just add single folder');
+  t.deepEqual(queue, [{type: 'add', filename: `sens_what${path.sep}`}], 'should just add single folder');
   queue.splice(0, queue.length);
 
   fs.renameSync(path.join(root, 'sens_what'), path.join(root, 'SENS_WHAT'));
   await wait(100);
   t.deepEqual(queue, [
-    {type: 'delete', filename: 'sens_what/'},
-    {type: 'add', filename: 'SENS_WHAT/'},
+    {type: 'delete', filename: `sens_what${path.sep}`},
+    {type: 'add', filename: `SENS_WHAT${path.sep}`},
   ], 'should add and delete old folder');
 });
