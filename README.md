@@ -1,10 +1,18 @@
-This is a filesystem watcher that just uses `fs.watch` and friends (i.e., no polling).
+Filesystem watcher that uses `fs.watch` and friends (i.e., no polling).
+This is the library—check out [sents-cli](https://npmjs.com/package/sents-cli) to use this on the command-line.
 
 # Features
 
 * Zero dependencies 🍩
 * Supports macOS, Linux, Windows (and probably others) via the same API and no native code
 * Supports hard links (announces changes to all matching inodes)
+* Handles case-insensitive filesystems ("foo" => "FOO" is announced)
+
+It does not support some features:
+
+* Following symlinks
+* Watching across volumes
+* And it should not be used on network shares (they typically need polling)
 
 # Usage
 
@@ -48,13 +56,5 @@ You could also make it support e.g., the contents of `.gitignore` (but make sure
 
 # Caveats
 
-- This will only watch the same filesystem as the target.
-  For example, on macOS, watching "/Volumes" will not contain your external volumes.
-
-- This does not follow symlinks.
-  Do that yourself.
-
-- Sents will only watch the original directory.
-  If it moves or is renamed, Sents will probably crash.
-
-- Don't use this on a network volume.
+Sents will only watch the original directory.
+If it moves or is renamed, Sents will probably fail.
