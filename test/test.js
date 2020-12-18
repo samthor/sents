@@ -56,12 +56,64 @@ test('file doesn\'t have trailing slash', async t => {
   t.deepEqual(queue, [{type: 'add', filename: 'testFile'}], 'file is added');
   queue.splice(0, queue.length);
 
+  fs.writeFileSync(path.join(root, 'testFile'), 'update');
+  await wait(100);
+  t.deepEqual(queue, [{type: 'change', filename: 'testFile'}], 'file is changed');
+  queue.splice(0, queue.length);
+
   fs.rmSync(path.join(root, 'testFile'), {force: true});
   await wait(100);
   t.deepEqual(queue, [{type: 'delete', filename: 'testFile'}], 'should delete');
 });
 
-test('rename to same but case-sensitive', async t => {
+test('supports dup files on case-sensitive fs', async t => {
+  const {queue, root} = createWatcher();
+  fs.writeFileSync(path.join(root, 'testFile'), 'hi');
+
+  try {
+    fs.statSync(path.join(root, 'TESTfile'));
+    return t.assert(true, 'nothing to do, case-insensitive fs');
+  } catch (e) {
+    // doesn't exist, test can run
+  }
+
+  fs.writeFileSync(path.join(root, 'testFILE'), 'other file');
+  await wait();
+
+  t.deepEqual(queue, [
+    {type: 'add', filename: `testFile`},
+    {type: 'add', filename: `testFILE`},
+  ], 'should add two files');
+});
+
+test('supports hard-link notification', async t => {
+  const {queue, root} = createWatcher();
+
+  fs.writeFileSync(path.join(root, 'testFile1'), 'hi');
+  fs.linkSync(path.join(root, 'testFile1'), path.join(root, 'testFile2'));
+
+  await wait();
+  t.deepEqual(queue, [
+    {type: 'add', filename: 'testFile1'},
+    {type: 'add', filename: 'testFile2'},
+  ], 'files are added');
+  queue.splice(0, queue.length);
+
+  fs.appendFileSync(path.join(root, 'testFile2'), '\nand stuff');
+  await wait(100);
+
+  const expected = [
+    {type: 'change', filename: 'testFile1'},
+    {type: 'change', filename: 'testFile2'},
+  ];
+  if (queue.length === 4) {
+    // Sometimes the event arrives twice.
+    expected.push(...expected);
+  }
+  t.deepEqual(queue, expected, 'files are both changed');
+});
+
+test('rename to same but different case', async t => {
   const {queue, root} = createWatcher();
 
   fs.mkdirSync(path.join(root, 'sens_what'));
