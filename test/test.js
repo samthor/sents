@@ -40,6 +40,13 @@ class TestWatcherContext {
   };
 
   /**
+   * @return {Promise<void>}
+   */
+  get ready() {
+    return this.#w.ready;
+  }
+
+  /**
    * Clear the queue for next time.
    */
   clear() {
@@ -53,6 +60,10 @@ class TestWatcherContext {
    */
   get queue() {
     return this.#queue.slice();
+  }
+
+  error(handler) {
+    this.#w.on('error', handler);
   }
 
   /**
@@ -93,7 +104,7 @@ class TestWatcherContext {
   }
 }
 
-const createWatcher = () => {
+const createWatcher = async () => {
   // Always use a unique directory as macOS seems to do odd things with literally just deleted
   // folders.
   const root = path.join(tmpdir, `root${++rootCount}_${(Math.random() * 256).toString(16)}`);
@@ -101,11 +112,12 @@ const createWatcher = () => {
 
   const watcher = new TestWatcherContext(root);
   cleanup.push(watcher.cleanup);
+  await watcher.ready;
   return watcher;
 };
 
 test('create folder', async t => {
-  const ctx = createWatcher();
+  const ctx = await createWatcher();
 
   fs.mkdirSync(ctx.t('blah'));
   await ctx.wait();
@@ -113,7 +125,7 @@ test('create folder', async t => {
 });
 
 test('file doesn\'t have trailing slash', async t => {
-  const ctx = createWatcher();
+  const ctx = await createWatcher();
 
   fs.writeFileSync(ctx.t('testFile'), 'hi');
   await ctx.wait();
@@ -131,7 +143,7 @@ test('file doesn\'t have trailing slash', async t => {
 });
 
 test('supports dup files on case-sensitive fs', async t => {
-  const ctx = createWatcher();
+  const ctx = await createWatcher();
   fs.writeFileSync(ctx.t('testFile'), 'hi');
 
   try {
@@ -151,7 +163,7 @@ test('supports dup files on case-sensitive fs', async t => {
 });
 
 test('supports hard-link notification', async t => {
-  const ctx = createWatcher();
+  const ctx = await createWatcher();
 
   fs.writeFileSync(ctx.t('testFile1'), 'hi');
   fs.linkSync(ctx.t('testFile1'), ctx.t('testFile2'));
@@ -173,7 +185,7 @@ test('supports hard-link notification', async t => {
 });
 
 test('rename to same but different case', async t => {
-  const ctx = createWatcher();
+  const ctx = await createWatcher();
 
   fs.mkdirSync(ctx.t('sens_what'));
   await ctx.wait();
@@ -186,4 +198,15 @@ test('rename to same but different case', async t => {
     {type: 'delete', filename: `sens_what${path.sep}`},
     {type: 'add', filename: `SENS_WHAT${path.sep}`},
   ], 'should add and delete old folder');
+});
+
+test('moving folder results in error', async t => {
+  const ctx = await createWatcher();
+
+  await new Promise((resolve, reject) => {
+    ctx.error(resolve);
+    fs.rmdirSync(ctx.t('.'));
+    setTimeout(reject, 1000);
+  });
+  t.assert(true);
 });
