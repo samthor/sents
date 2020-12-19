@@ -15,9 +15,10 @@ const watcher = buildWatcher(target, {
     }
     return true;
   },
+  delay: 1000,
 });
 
-watcher.on('change', (filename, type, ino) => {
+watcher.on('raw', (filename, type, ino) => {
   console.warn(type.toUpperCase(), filename, ino);
 });
 
