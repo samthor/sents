@@ -208,7 +208,7 @@ test('moving folder results in error', async t => {
   await new Promise((resolve, reject) => {
     ctx.error(resolve);
     fs.rmdirSync(ctx.t('.'));
-    setTimeout(reject, 1000);
+    setTimeout(() => reject('timeout'), 1000);
   });
   t.assert(true);
 });
