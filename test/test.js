@@ -32,7 +32,9 @@ class TestWatcherContext {
     this.#queue = queue;
 
     this.#w = build(root);
-    this.#w.on('change', (filename, type) => queue.push({filename, type}));
+    this.#w.on('raw', (filename, type) => {
+      queue.push({filename, type});
+    });
   }
 
   cleanup = () => {
@@ -84,8 +86,8 @@ class TestWatcherContext {
       };
       setTimeout(() => r(false), delay);
 
-      this.#w.on('change', checker);
-      cleanup = () => this.#w.off('change', checker);
+      this.#w.on('raw', checker);
+      cleanup = () => this.#w.off('raw', checker);
       checker();
     });
 
