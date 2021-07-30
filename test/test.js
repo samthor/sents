@@ -163,8 +163,8 @@ test('supports dup files on case-sensitive fs', async t => {
   await ctx.wait(2);
 
   t.deepEqual(ctx.queue, [
-    {type: 'add', filename: `testFILE`},
     {type: 'add', filename: `testFile`},
+    {type: 'add', filename: `testFILE`},
   ], 'should add two files');
 });
 
