@@ -52,15 +52,15 @@ This also supports some options:
 const watcher = buildWatcher('.', {
   dotfiles: false,
   filter: (rel) => true,
-  delay: undefined,
+  delay: 1000,
 });
 ```
 
-* `dotfiles` controls whether files starting with '.' are returned
-* `filter` allows filtering of the results (return `true` to include)
+* `dotfiles` controls whether files starting with '.' are returned (default `false`)
+* `filter` allows filtering of the results (return `true` to include, default includes all)
   - When directories are passed, they'll end with `path.sep` (i.e., "/" most places); if you filter them, you'll _never_ be asked or notified about their subdirectories
   - This should be a pure function—don't change results over time—otherwise, you're gonna have a bad time
-* `delay` allows you to delay change notifications, when unset, this will use microtask resolution (this could be useful if you make lots of tiny changes but want to hide them)
+* `delay` allows you to delay and aggregate changes by ms (if unset, uses a microtask)
 
 # Notes
 
@@ -81,9 +81,10 @@ watcher.once('ready', () => {...});
 
 This doesn't have glob support or any built-in filtering aside the controls above.
 If you want to write a command-line tool or similar, you should build a `filter` function that supports globs.
+Check out [sents-cli](https://npmjs.com/package/sents-cli).
 
 ## Files Only
 
-This package isn't a _file_ watcher, it's a _directory_ watcher.
+Technically this package isn't a _file_ watcher, it's a _directory_ watcher (most files watchers are).
+It's not more efficient to watch single files than it is a whole directory (since it has to be watched in case the file is removed).
 If you just want to watch a small number of files for changes, be sure to allow them specifically in `filter`, while ignoring all other files or directories.
-
