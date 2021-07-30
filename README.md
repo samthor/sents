@@ -1,3 +1,5 @@
+[![Test](https://github.com/samthor/sents/actions/workflows/node.js.yml/badge.svg)](https://github.com/samthor/sents)
+
 Filesystem watcher that uses `fs.watch` and friends (i.e., no polling).
 This is the library—check out [sents-cli](https://npmjs.com/package/sents-cli) to use this on the command-line.
 
