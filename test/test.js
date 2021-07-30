@@ -115,6 +115,10 @@ const createWatcher = async () => {
   const watcher = new TestWatcherContext(root);
   cleanup.push(watcher.cleanup);
   await watcher.ready;
+
+  // FIXME: macOS needs time to kick its watcher into gear. Can this be put into the library?
+  await new Promise(r => setTimeout(r, 100));
+
   return watcher;
 };
 
