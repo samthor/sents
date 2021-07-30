@@ -2,9 +2,9 @@
 import * as events from 'events';
 
 export interface CorpusOptions {
-  dotfiles?: boolean;
-  filter?: (name: string) => boolean;
-  delay?: number;
+  dotfiles: boolean;
+  filter: (name: string) => boolean;
+  delay: number;
 }
 
 export class CorpusWatcher extends events.EventEmitter {

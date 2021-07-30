@@ -8,10 +8,18 @@
     "require": "./dist.cjs"
   },
   "types": "index.d.ts",
-  "repository": "git@github.com:samthor/sents.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samthor/sents.git"
+  },
   "author": "Sam Thorogood <sam.thorogood@gmail.com>",
   "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/samthor/sents/issues"
+  },
+  "homepage": "https://github.com/samthor/sents#readme",
   "devDependencies": {
+    "@types/node": "^16.4.8",
     "ava": "^3.13.0",
     "rollup": "^2.33.3"
   },

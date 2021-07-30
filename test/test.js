@@ -1,7 +1,7 @@
 import test from 'ava';
 import build from '../lib/index.js';
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const cleanup = [];
 let rootCount = 0;
