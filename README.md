@@ -3,16 +3,17 @@ This is the library—check out [sents-cli](https://npmjs.com/package/sents-cli)
 
 # Features
 
-* Zero dependencies 🍩
-* Supports macOS, Linux, Windows (and probably others) via the same API and no native code
-* Supports hard links (announces changes to all matching inodes)
-* Handles case-insensitive filesystems ("foo" => "FOO" is announced)
+* Zero dependencies 🍩 and no native code
+* Supports macOS, Linux, Windows (and probably others) via the same API
+* Supports hard links (announces changes at all places inode is found)
+* Handles awkward renames on case-insensitive filesystems ("foo" => "FOO" is announced)
 
 It does not support some features:
 
 * Following symlinks
+* Renames (instead announce delete/add&mdash;what do renames mean in a world of hard links?)
 * Watching across volumes
-* And it should not be used on network shares (they typically need polling)
+* And it should not be used on network shares (they need polling, every watcher hates these)
 
 # Usage
 
