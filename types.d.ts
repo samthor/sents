@@ -2,8 +2,26 @@
 import * as events from 'events';
 
 export interface CorpusOptions {
+
+  /**
+   * Whether to include dotfiles.
+   *
+   * @default false
+   */
   dotfiles: boolean;
+
+  /**
+   * What files or directories (passed ending with '/') to include. This should be stable; don't
+   * change results over time. Default includes all.
+   */
   filter: (name: string) => boolean;
+
+  /**
+   * How long, if any, to delay callbacks by (helps to aggregate fast changes). Negative to use
+   * a microtask only.
+   *
+   * @default -1
+   */
   delay: number;
 }
 
@@ -11,7 +29,7 @@ export class CorpusWatcher extends events.EventEmitter {
   /**
    * Resolved after an initial scan is complete. This can throw if the path was invalid.
    */
-  ready: Promise<void>;
+  readonly ready: Promise<void>;
 
   /**
    * Shuts down the resources for this Watcher.
@@ -45,4 +63,4 @@ export class CorpusWatcher extends events.EventEmitter {
  * @param toplevel to watch
  * @param options options including filter
  */
-export default function watcher(toplevel: string, options?: CorpusOptions): CorpusWatcher;
+export default function watcher(toplevel: string, options?: Partial<CorpusOptions>): CorpusWatcher;
