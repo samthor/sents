@@ -1,13 +1,14 @@
 {
   "name": "sents",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Sentinels file watcher",
   "main": "lib/index.js",
   "exports": {
     "import": "./lib/index.js",
-    "require": "./dist.cjs"
+    "require": "./dist.cjs",
+    "types": "./types.d.ts"
   },
-  "types": "types.d.ts",
+  "types": "./types.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/samthor/sents.git"
